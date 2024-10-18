@@ -5,33 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>WebAssembly Check</title>
     
-<link rel="modulepreload" href="/leptos-tutorial-5937c9dfec768b44.js" crossorigin=anonymous integrity="sha384-gHt/HxV+vTqfLGGOzB4r3o7RmKntjx/OJASoCgNXn03+PTa0n1wO/41+Bx/rzRaI">
-<link rel="preload" href="/leptos-tutorial-5937c9dfec768b44_bg.wasm" crossorigin=anonymous integrity="sha384-lTM2geQvd5rOTTuVTrOAp/uhThBGOC4RW5+l53+egXmj4usyRvLzmjdU1ytO98rB" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="/leptos-tutorial-a9d396f79a3e3583.js" crossorigin=anonymous integrity="sha384-QrXhX06qlSY1dYiiztPSWPO9v4SoavrX9ou1gOC11sO/z865taikpTCD3CB+99cY">
+<link rel="preload" href="/leptos-tutorial-a9d396f79a3e3583_bg.wasm" crossorigin=anonymous integrity="sha384-Ux3G4K3IKl2MxVYIT/sx7CS60EJA2hS/WA8O2vZbEfJ1fqZ9zcAQdK5M3zSv1ufv" as="fetch" type="application/wasm"></head>
     <body>
         <div id="f1" />
         <div id="f2" />
         <div id="f3" />
         <div id="f4" />
-
-        <script type="module">
-            import init, { wasm_available } from "./pkg/wasm_check.js";
-
-            async function run() {
-                await init();
-                const status = wasm_available()
-                    ? "WebAssembly is available!"
-                    : "WebAssembly is not available.";
-                document.getElementById("status").textContent = status;
-            }
-
-            document
-                .getElementById("check-wasm")
-                .addEventListener("click", run);
-        </script>
     
-<script type="module" nonce="FZ3n/t4bT0p0Gsm/5XJtlg==">
-import init, * as bindings from '/leptos-tutorial-5937c9dfec768b44.js';
-const wasm = await init('/leptos-tutorial-5937c9dfec768b44_bg.wasm');
+<script type="module" nonce="U4vW4We8d73IZIsX5S1YKA==">
+import init, * as bindings from '/leptos-tutorial-a9d396f79a3e3583.js';
+const wasm = await init('/leptos-tutorial-a9d396f79a3e3583_bg.wasm');
 
 
 window.wasmBindings = bindings;
@@ -39,134 +23,5 @@ window.wasmBindings = bindings;
 
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
-</script><script>"use strict";
-
-(function () {
-
-    const address = '{{__TRUNK_ADDRESS__}}';
-    const base = '{{__TRUNK_WS_BASE__}}';
-    let protocol = '';
-    protocol =
-        protocol
-            ? protocol
-            : window.location.protocol === 'https:'
-                ? 'wss'
-                : 'ws';
-    const url = protocol + '://' + address + base + '.well-known/trunk/ws';
-
-    class Overlay {
-        constructor() {
-            // create an overlay
-            this._overlay = document.createElement("div");
-            const style = this._overlay.style;
-            style.height = "100vh";
-            style.width = "100vw";
-            style.position = "fixed";
-            style.top = "0";
-            style.left = "0";
-            style.backgroundColor = "rgba(222, 222, 222, 0.5)";
-            style.fontFamily = "sans-serif";
-            // not sure that's the right approach
-            style.zIndex = "1000000";
-            style.backdropFilter = "blur(1rem)";
-
-            const container = document.createElement("div");
-            // center it
-            container.style.position = "absolute";
-            container.style.top = "30%";
-            container.style.left = "15%";
-            container.style.maxWidth = "85%";
-
-            this._title = document.createElement("div");
-            this._title.innerText = "Build failure";
-            this._title.style.paddingBottom = "2rem";
-            this._title.style.fontSize = "2.5rem";
-
-            this._message = document.createElement("div");
-            this._message.style.whiteSpace = "pre-wrap";
-
-            const icon= document.createElement("div");
-            icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#dc3545" viewBox="0 0 16 16"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>';
-            this._title.prepend(icon);
-
-            container.append(this._title, this._message);
-            this._overlay.append(container);
-
-            this._inject();
-            window.setInterval(() => {
-                this._inject();
-            }, 250);
-        }
-
-        set reason(reason) {
-            this._message.textContent = reason;
-        }
-
-        _inject() {
-            if (!this._overlay.isConnected) {
-                // prepend it
-                document.body?.prepend(this._overlay);
-            }
-        }
-
-    }
-
-    class Client {
-        constructor(url) {
-            this.url = url;
-            this.poll_interval = 5000;
-            this._overlay = null;
-        }
-
-        start() {
-            const ws = new WebSocket(this.url);
-            ws.onmessage = (ev) => {
-                const msg = JSON.parse(ev.data);
-                switch (msg.type) {
-                    case "reload":
-                        this.reload();
-                        break;
-                    case "buildFailure":
-                        this.buildFailure(msg.data)
-                        break;
-                }
-            };
-            ws.onclose = this.onclose;
-        }
-
-        onclose() {
-            window.setTimeout(
-                () => {
-                    // when we successfully reconnect, we'll force a
-                    // reload (since we presumably lost connection to
-                    // trunk due to it being killed, so it will have
-                    // rebuilt on restart)
-                    const ws = new WebSocket(this.url);
-                    ws.onopen = () => window.location.reload();
-                    ws.onclose = this.onclose;
-                },
-                this.poll_interval);
-        }
-
-        reload() {
-            window.location.reload();
-        }
-
-        buildFailure({reason}) {
-            // also log the console
-            console.error("Build failed:", reason);
-
-            console.debug("Overlay", this._overlay);
-
-            if (!this._overlay) {
-                this._overlay = new Overlay();
-            }
-            this._overlay.reason = reason;
-        }
-    }
-
-    new Client(url).start();
-
-})()
 </script></body>
 </html>
