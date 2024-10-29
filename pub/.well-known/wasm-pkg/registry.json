@@ -1,4 +1,4 @@
 {
     "ociRegistry": "ghcr.io",
-    "ociNamespacePrefix": "seungjin/wasm-pkg/"
+    "ociNamespacePrefix": "webassembly/"
 }
