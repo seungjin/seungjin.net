@@ -1,14 +1,30 @@
 [package]
-name = "seungjin-web"
+name = "app"
 version = "0.1.0"
 edition = "2021"
+authors = ["Seungjin Kim <seungjin@duck.com>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 anyhow = "1"
-rand = "0.9.0-alpha.2"
 leptos = { version = "0.6.15", features = ["csr"] }
-web-sys = { version = "0.3", features = ["Element", "HtmlElement"] }
-wasm-bindgen = "0.2"
+leptos_meta = { version = "0.6.15", features = ["csr"] }
 leptos_router = { version = "0.6.15", features = ["csr"] }
-reqwest = { version = "0.12.8", features = ["json"] }
-serde = { version = "1.0", features = ["derive"] }
+console_log = "1"
+log = "0.4"
+console_error_panic_hook = "0.1"
+
+# utils
+# strum = { version = "0.25", features = ["derive", "strum_macros"] }
+# strum_macros = "0.25"
+
+[dev-dependencies]
+wasm-bindgen = "0.2"
+wasm-bindgen-test = "0.3"
+
+[profile.release]
+opt-level = 'z'
+lto = true
+codegen-units = 1
+panic = "abort"

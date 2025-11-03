@@ -24,6 +24,27 @@ fn main() {
 #[component]
 pub fn App() -> impl IntoView {
     view! {
-      my app
+     hello
+    }
+}
+
+#[component]
+fn Home() -> impl IntoView {
+    view! {
+        Home
+    }
+}
+
+#[component]
+fn Users() -> impl IntoView {
+    view! {
+        Users
+    }
+}
+
+#[component]
+fn UserProfile() -> impl IntoView {
+    view! {
+        UserProfile
     }
 }
